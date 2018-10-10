@@ -1,0 +1,26 @@
+upstream php {
+    server phpfpm:9000;
+}
+
+server {
+    listen 80;
+    server_name web.test;
+    root /usr/share/nginx/html/web/public;
+    index index.html index.htm index.php;
+
+    error_log "/var/logs/nginx/default-error.log";
+    access_log "/var/logs/nginx/default-access.log";
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include fastcgi.conf;
+        include fastcgi_params;
+        fastcgi_intercept_errors on;
+        fastcgi_pass php;
+        fastcgi_param SERVER_NAME $host;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+}
