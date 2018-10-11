@@ -1,4 +1,4 @@
-FROM nginx:latest
+FROM nginx:alpine
 
 Run mkdir -p /etc/nginx/sites-enabled
 

@@ -4,6 +4,8 @@ services:
         image: jiibon/nginx-lemp
         container_name: nginx
         restart: always
+        ports:
+            - '80:80'
         links:
             - phpfpm
         volumes:
@@ -14,5 +16,16 @@ services:
         image: php:7.2.10-fpm-alpine
         container_name: php-fpm
         restart: always
+        ports:
+            - '9000:9000'
         volumes:
             - ./html:/usr/share/nginx/html
+    mysql:
+        container_name: mysql
+        image: 'mysql'
+        ports:
+            - '3306:3306'
+        volumes:
+            - ./db:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=
