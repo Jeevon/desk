@@ -4,16 +4,19 @@ upstream php {
 
 server {
     listen 80;
-    server_name web.test;
-    root /usr/share/nginx/html/web/public;
+    server_name site.local;
+    root /usr/share/nginx/html/site/public;
     index index.html index.htm index.php;
 
-    error_log "/var/logs/nginx/default-error.log";
-    access_log "/var/logs/nginx/default-access.log";
+    error_log "/var/logs/nginx/site.error.log";
+    access_log "/var/logs/nginx/site.access.log";
 
     location / {
         try_files $uri $uri/ /index.php?$query_string;
     }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt { access_log off; log_not_found off; }
 
     location ~ \.php$ {
         include fastcgi.conf;
@@ -22,5 +25,9 @@ server {
         fastcgi_pass php;
         fastcgi_param SERVER_NAME $host;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+
+    location ~ /\.ht {
+        deny all;
     }
 }
