@@ -3,7 +3,7 @@ services:
     nginx: 
         image: jiibon/nginx-lemp 
         container_name: nginx
-        restart: always
+        #restart: always
         ports:
             - '80:80'
         links:
@@ -16,9 +16,12 @@ services:
         image: php:7.2.10-fpm-alpine
         container_name: php-fpm
         restart: always
+        working_dir: /usr/share/nginx/html
         ports:
             - '9000:9000'
         links:
+            - db
+        depends_on:
             - db
         volumes:
             - ./html:/usr/share/nginx/html
