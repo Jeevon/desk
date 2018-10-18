@@ -3,15 +3,17 @@ services:
     nginx: 
         image: jiibon/nginx-lemp 
         container_name: nginx
-        #restart: always
+        restart: always
         ports:
             - '80:80'
-        links:
-            - phpfpm
         volumes:
             - ./nginx:/etc/nginx/sites-enabled/
             - ./html:/usr/share/nginx/html/
             - ./logs:/var/logs/nginx/
+        links:
+            - phpfpm
+        networks:
+            - desk
     phpfpm:
         image: php:7.2.10-fpm-alpine
         container_name: php-fpm
@@ -19,12 +21,14 @@ services:
         working_dir: /usr/share/nginx/html
         ports:
             - '9000:9000'
+        volumes:
+            - ./html:/usr/share/nginx/html
         links:
             - db
         depends_on:
             - db
-        volumes:
-            - ./html:/usr/share/nginx/html
+        networks:
+            - desk
     db:
         image: 'mysql'
         container_name: mysql
@@ -37,6 +41,8 @@ services:
         environment:
             MYSQL_USER: root
             MYSQL_ROOT_PASSWORD: 123456
+        networks:
+            - desk
     adminer:
         image: adminer
         container_name: adminer
@@ -45,3 +51,8 @@ services:
             - 8080:8080
         depends_on:
             - db
+        networks:
+            - desk
+
+networks:
+    desk:
