@@ -1,6 +1,9 @@
 FROM ubuntu:latest
 
-MAINTAINER John Jeevon Ang <johnjeevonang@gmail.com>
+LABEL maintainerr="johnjeevonang@gmail.com"
+
+ADD ./start-up.sh /opt/scripts/start-up.sh
+RUN chmod +x /opt/scripts/start-up.sh
 
 #update apt
 RUN apt update -y
@@ -18,7 +21,12 @@ RUN apt install nginx -y
 
 #install mysql
 RUN apt install mysql-server -y
-# RUN service mysql start
 
 #install php
 RUN apt install php-fpm php-mysql -y
+
+EXPOSE 80 3306
+
+WORKDIR /usr/share/nginx/html/
+
+ENTRYPOINT ["/opt/scripts/start-up.sh"]
