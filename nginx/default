@@ -1,33 +1,32 @@
-upstream php {
-    server phpfpm:9000;
-}
-
 server {
     listen 80;
-    server_name site.local;
-    root /usr/share/nginx/html/site/public;
+    server_name localhost;
+    root /usr/share/nginx/html;
+
     index index.html index.htm index.php;
 
     error_log "/var/logs/nginx/site.error.log";
     access_log "/var/logs/nginx/site.access.log";
+
+    charset utf-8;
 
     location / {
         try_files $uri $uri/ /index.php?$query_string;
     }
 
     location = /favicon.ico { access_log off; log_not_found off; }
-    location = /robots.txt { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
 
     location ~ \.php$ {
-        include fastcgi.conf;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+        fastcgi_index index.php;
         include fastcgi_params;
-        fastcgi_intercept_errors on;
-        fastcgi_pass php;
-        fastcgi_param SERVER_NAME $host;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     }
 
-    location ~ /\.ht {
+    location ~ /\.(?!well-known).* {
         deny all;
     }
 }

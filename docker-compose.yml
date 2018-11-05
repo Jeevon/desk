@@ -1,7 +1,7 @@
 version: '3'
 services: 
     nginx: 
-        image: jiibon/nginx-lemp 
+        image: jiibon/nginx-php
         container_name: nginx
         restart: always
         ports:
@@ -10,49 +10,22 @@ services:
             - ./nginx:/etc/nginx/sites-enabled/
             - ./html:/usr/share/nginx/html/
             - ./logs:/var/logs/nginx/
-        links:
-            - phpfpm
-        networks:
-            - desk
-    phpfpm:
-        image: php:7.2.10-fpm-alpine
-        container_name: php-fpm
-        restart: always
-        working_dir: /usr/share/nginx/html
-        ports:
-            - '9000:9000'
-        volumes:
-            - ./html:/usr/share/nginx/html
-        links:
-            - db
-        depends_on:
-            - db
-        networks:
-            - desk
-    db:
-        image: 'mysql'
-        container_name: mysql
-        command: --default-authentication-plugin=mysql_native_password
-        restart: always
-        ports:
-            - '3306:3306'
-        volumes:
-            - ./db:/var/lib/mysql
         environment:
-            MYSQL_USER: root
-            MYSQL_ROOT_PASSWORD: 123456
-        networks:
-            - desk
-    adminer:
-        image: adminer
-        container_name: adminer
-        restart: always
-        ports:
-            - 8080:8080
-        depends_on:
-            - db
-        networks:
-            - desk
-
-networks:
-    desk:
+            - "DB_PORT=3306"
+            - "DB_HOST=db"
+        #links:
+        #    - db
+        #depends_on:
+        #    - db
+    #db:
+    #    image: 'mysql'
+    #    container_name: mysql
+    #    command: --default-authentication-plugin=mysql_native_password
+    #    restart: always
+    #    ports:
+    #        - '3306:3306'
+    #    volumes:
+    #        - ./db:/var/lib/mysql
+    #    environment:
+    #        MYSQL_USER: root
+    #        MYSQL_ROOT_PASSWORD: 123456

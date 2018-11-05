@@ -1,6 +1,7 @@
 #!/bin/bash
 
-mysqlver=$(mysql -V)
-echo $mysqlver;
-echo "Starting mysql server";
-service mysql start
+service nginx start
+service php7.2-fpm start
+service php5.6-fpm start
+
+exec "$@"
